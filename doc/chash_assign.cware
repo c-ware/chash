@@ -1,0 +1,178 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.TH "CHASH_ASSIGN" "cware" "March 8th, 2022" "" \
+    "C-Ware Manual"
+
+
+.SH NAME
+chash_assign - assign a key value pair to a hashtable
+
+.SH SYNOPSIS
+
+.B #include <stdio.h>
+.br
+.B #include <stdlib.h>
+.br
+.B #include <string.h>
+.br
+.B #include <cware/chash/chash.h>
+.br
+
+
+.BI "#define chash_assign(" "hashtable" ", " "_key" ", " "_value" ", " \
+"namespace" ");"
+
+.SH DESCRIPTION
+The
+.B chash_assign
+macro will assign a key value pair to a hashtable based off the hash of
+.IR _key .
+If the hashtable is in heap mode, and the load factor of the hashtable has been
+computed to be above or equal to the load threshold, then the hashtable will be
+resized, copying all keys over to a new hashtable. If, however, in stack mode,
+then this macro will produce an error if the hashtable is full when trying to
+add a key. This macro will also overwrite the value of a key if the same key is
+provided, but a different value. The value before will be freed using the
+.I HASHTABLE_NAME_FREE_VALUE(value)
+macro.
+
+
+This macro will print an error message to the stderr, and exit the program when
+any of the following conditions are met:
+.RS
+
+
+.IP \[bu] 0.4i
+The buffer is NULL
+.br
+
+
+.IP \[bu] 0.4i
+The hashtable is full in stack mode
+.br
+
+
+.RE
+
+
+
+.I hashtable
+will be the hashtable to assign the pair to
+.br
+.I _key
+will be the key to assign
+.br
+.I _value
+will be the value to assign the key to
+.br
+.I namespace
+will be the namespace of the hashtable settings to use
+.br
+
+.SH EXAMPLES
+
+/*
+.br
+ * This example showcases how to use the
+.B chash_assign
+macro.
+.br
+*/
+
+
+.B #include <stdio.h>
+.br
+.B #include <stdlib.h>
+.br
+.B #include <string.h>
+.br
+.B #include <cware/chash/chash.h>
+.br
+
+
+.TS
+tab(;);
+l l
+.
+#define STRING_TABLE_HEAP;1
+#define STRING_TABLE_BUCKET;struct StringBucket
+#define STRING_TABLE_FREE_KEY(key);NULL
+#define STRING_TABLE_HASH(key, hash);chash_string_hash(key, hash)
+#define STRING_TABLE_FREE_VALUE(value);NULL
+#define STRING_TABLE_COMPARE(cmp_a, cmp_b);chash_string_compare(cmp_a, cmp_b)
+#define STRING_TABLE_INIT(bucket, _key, _value);\
+chash_default_init(bucket, _key, _value)
+.TE
+
+struct StringBucket {
+.br
+    char *key;
+.br
+    int value;
+.br
+    int state;
+.br
+};
+
+struct StringHashtable {
+.br
+    int length;
+.br
+    int capacity;
+.br
+    struct StringBucket *buckets;
+.br
+};
+
+
+int main(void) {
+.br
+    struct StringHashtable *hashtable = chash_init(hashtable, STRING_TABLE);
+.br
+
+    /* Add some keys */
+.br
+    chash_assign(hashtable, "foo", 1);
+.br
+    chash_assign(hashtable, "bar", 2);
+.br
+    chash_assign(hashtable, "baz", 3);
+.br
+
+    /* Free the hashtable */
+.br
+    chash_free(hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+
+.BR cware (cware),
+.BR chash (cware)
+

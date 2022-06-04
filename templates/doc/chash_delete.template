@@ -1,0 +1,68 @@
+include(./chash.m4)
+
+CHASH_HEADER()
+
+.SH NAME
+chash_delete - delete a key value pair from the hashtable
+
+.SH SYNOPSIS
+CHASH_INCLUSIONS()
+
+.BI "#define chash_delete(" "hashtable" ", " "_key" ", " "namespace" ");"
+
+.SH DESCRIPTION
+The
+.B chash_delete
+macro will delete a key value pair from a hashtable, and mark the spot that
+they existed inside of as a tombstone.
+
+CHASH_ERROR_LIST_START()
+CHASH_ERROR_COND(`The buffer is NULL')
+CHASH_ERROR_COND(`The key does not exist in the hashtable')
+CHASH_ERROR_LIST_END()
+
+
+CHASH_PARAMETER(`hashtable', `the hashtable to delete from')
+CHASH_PARAMETER(`_key', `the key to delete the value of')
+CHASH_PARAMETER(`namespace', `the namespace of the hashtable settings to use')
+
+.SH EXAMPLES
+CHASH_EXAMPLE_COMMENT(`chash_delete')
+CHASH_INCLUSIONS()
+CHASH_EXAMPLE_INFO(1)
+
+int main(void) {
+.br
+    char *value = NULL;
+.br
+    struct StringHashtable *hashtable = chash_init(hashtable, STRING_TABLE);
+.br
+
+    /* Add some keys */
+.br
+    chash_assign(hashtable, "foo", 1, STRING_TABLE);
+.br
+    chash_assign(hashtable, "bar", 2, STRING_TABLE);
+.br
+    chash_assign(hashtable, "baz", 3, STRING_TABLE);
+.br
+
+    /* Remove some keys */
+.br
+    chash_delete(hashtable, "foo", STRING_TABLE);
+.br
+
+    /* Free the hashtable */
+.br
+    chash_free(hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+CHASH_SEE_ALSO()

@@ -1,0 +1,191 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.TH "CHASH_ITER" "cware" "March 8th, 2022" "" \
+    "C-Ware Manual"
+
+
+.SH NAME
+chash_iter - iterate through a hashtable
+
+.SH SYNOPSIS
+
+.B #include <stdio.h>
+.br
+.B #include <stdlib.h>
+.br
+.B #include <string.h>
+.br
+.B #include <cware/chash/chash.h>
+.br
+
+
+.BI "#define chash_iter(" "hashtable" ", " "index" ", " "_key" ", " "_value" \
+");"
+.br
+.BI "#define chash_skip(" "hashtable" ", " "index" ");"
+
+.SH DESCRIPTION
+The
+.B chash_iter
+macro will iterate through all filled buckets in the hashtable, and unpack the
+key and value inside of each bucket filled bucket into the
+.I _key
+and
+.I _value
+variables.
+
+The
+.B chash_iter
+macro has no error conditions.
+
+.I hashtable
+will be the hashtable to iterate through
+.br
+.I index
+will be the index in the hashtable
+.br
+.I _key
+will be the variable to write the key to
+.br
+.I _value
+will be the variable to write the value to
+.br
+
+The
+.B chash_skip
+macro will skip over any indexes containing unfilled buckets. Intended to be
+used in the body of the for loop.
+
+This macro has no error conditions.
+
+.I hashtable
+will be the hashtable to check the buckets of
+.br
+.I index
+will be the index in the hashtable
+.br
+
+.SH EXAMPLES
+
+/*
+.br
+ * This example showcases how to use the
+.B chash_iter
+macro.
+.br
+*/
+
+
+.B #include <stdio.h>
+.br
+.B #include <stdlib.h>
+.br
+.B #include <string.h>
+.br
+.B #include <cware/chash/chash.h>
+.br
+
+
+.TS
+tab(;);
+l l
+.
+#define STRING_TABLE_HEAP;1
+#define STRING_TABLE_BUCKET;struct StringBucket
+#define STRING_TABLE_FREE_KEY(key);NULL
+#define STRING_TABLE_HASH(key, hash);chash_string_hash(key, hash)
+#define STRING_TABLE_FREE_VALUE(value);NULL
+#define STRING_TABLE_COMPARE(cmp_a, cmp_b);chash_string_compare(cmp_a, cmp_b)
+#define STRING_TABLE_INIT(bucket, _key, _value);\
+chash_default_init(bucket, _key, _value)
+.TE
+
+struct StringBucket {
+.br
+    char *key;
+.br
+    int value;
+.br
+    int state;
+.br
+};
+
+struct StringHashtable {
+.br
+    int length;
+.br
+    int capacity;
+.br
+    struct StringBucket *buckets;
+.br
+};
+
+
+int main(void) {
+.br
+    char *key = NULL;
+.br
+    int index = 0;
+.br
+    int value = 0;
+.br
+    struct StringHashtable *hashtable = chash_init(hashtable, STRING_TABLE);
+.br
+
+    /* Add some keys */
+.br
+    chash_assign(hashtable, "foo", 1);
+.br
+    chash_assign(hashtable, "bar", 2);
+.br
+    chash_assign(hashtable, "baz", 3);
+
+    /* Iterate through the hashtable */
+.br
+    chash_iter(hashtable, index, key, value) {
+.br
+        chash_skip(hashtable, index); /* Skip through unfilled buckets */
+.br
+
+        printf("%s: %i\\n", key, value);
+.br
+    }
+.br
+
+    /* Free the hashtable */
+.br
+    chash_free(hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+
+.BR cware (cware),
+.BR chash (cware)
+

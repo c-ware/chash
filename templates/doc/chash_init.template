@@ -1,0 +1,59 @@
+include(./chash.m4)
+
+CHASH_HEADER()
+
+.SH NAME
+chash_init - initialise a new hashtable on the heap
+
+.SH SYNOPSIS
+CHASH_INCLUSIONS()
+
+.BI "#define chash_init(" "hashtable" ", " "namespace" ");"
+
+.SH DESCRIPTION
+The
+.B chash_init
+macro will initialise a new hashtable on the heap, and write it into the
+variable
+.IR hashtable .
+The hashtable produced by this macro has to be released when the programmer
+decides it is most fitting to delete it, which can be done with
+.BR chash_free (cware).
+
+This macro has no error conditions.
+
+CHASH_PARAMETER(`hashtable', `the variable to initialise the hashtable into')
+CHASH_PARAMETER(`namespace', `the namespace of the hashtable settings to use')
+
+.SH EXAMPLES
+CHASH_EXAMPLE_COMMENT(`chash_init')
+CHASH_INCLUSIONS()
+CHASH_EXAMPLE_INFO(1)
+
+.br
+int main(void) {
+.br
+    struct StringHashtable *hashtable = chash_init(hashtable, STRING_TABLE);
+.br
+
+    /* Perform operations on the hashtable */
+.br
+    chash_assign(hashtable, "foo", 1);
+.br
+    chash_assign(hashtable, "bar", 2);
+.br
+
+    /* Free the hashtable */
+.br
+    chash_free(hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+CHASH_SEE_ALSO()

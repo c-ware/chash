@@ -1,0 +1,63 @@
+include(./chash.m4)
+
+CHASH_HEADER()
+
+.SH NAME
+chash_is_full - determine if a hashtable is full
+
+.SH SYNOPSIS
+CHASH_INCLUSIONS()
+
+.BI "#define chash_is_full(" "hashtable" ", " "namespace" ");"
+
+.SH DESCRIPTION
+The
+.B chash_is_full
+macro will determine if a hashtable is full. This is useful when using a stack
+allocated hashtable, where you will most likely want to know if a hashtable is
+full or not before adding more elements, since stack hashtables do not
+dynamically resize themselves.
+
+This macro has no error conditions.
+
+CHASH_PARAMETER(`hashtable', `the hashtable to check')
+CHASH_PARAMETER(`namespace', `the namespace of the hashtable settings to use')
+
+.SH EXAMPLES
+CHASH_EXAMPLE_COMMENT(`chash_is_full')
+CHASH_INCLUSIONS()
+CHASH_EXAMPLE_INFO(0)
+
+int main(void) {
+.br
+    struct StringBucket buckets[3] = {0};
+.br
+    struct StringHashtable hashtable = chash_init_stack(&hashtable, buckets, 3,
+.br
+                                                        STRING_TABLE);
+.br
+
+    printf("Hashtable is full: %i\\n", chash_is_full(&hashtable, STRING_TABLE);
+.br
+    
+    /* Add some keys */
+.br
+    chash_assign(hashtable, "foo", 1);
+.br
+    chash_assign(hashtable, "bar", 2);
+.br
+    chash_assign(hashtable, "baz", 3);
+.br
+
+    printf("Hashtable is full: %i\\n", chash_is_full(&hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+CHASH_SEE_ALSO()

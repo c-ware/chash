@@ -1,0 +1,166 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.TH "CHASH" "cware" "March 8th, 2022" "" \
+    "C-Ware Manual"
+
+
+.SH NAME
+chash - a macro-based hashtable implementation
+
+.SH SYNOPSIS
+
+.B #include <stdio.h>
+.br
+.B #include <stdlib.h>
+.br
+.B #include <string.h>
+.br
+.B #include <cware/chash/chash.h>
+.br
+
+
+struct
+.I BucketName
+{
+.RS
+.I key_type
+key;       /* The key to store in the bucket */
+.br
+.I value_type
+value;   /* The value to store in the bucket */
+.br
+int state;          /* The state of the bucket; dead, alive, filled */
+.RE
+};
+
+struct
+.I HashtableName
+{
+.RS
+int length;                /* How much of the hashtable has been filled */
+.br
+int capacity;              /* How much the hashtable can hold */
+.br
+struct
+.I BucketName
+buckets; /* The buckets to store in the hashtable */
+.RE
+};
+
+/* Individual hashtable configuration */
+.TS
+tab(;);
+lb l
+.
+#define HASHTABLE_NAME_HEAP;/* Whether or not the hashtable should use heap \
+memory */
+#define HASHTABLE_NAME_BUCKET;/* The bucket type used by the hashtable */
+#define HASHTABLE_NAME_FREE_KEY(key);/* Function to free a key of the \
+hashtable */
+#define HASHTABLE_NAME_FREE_VALUE(value);/* Function to free a key of the \
+hashtable */
+#define HASHTABLE_NAME_COMPARE(cmp_a, cmp_b);/* Function to compare two keys */
+#define HASHTABLE_NAME_HASH(key, hash);/* Function to hash a key */
+#define HASHTABLE_NAME_INIT(bucket, _key, _value);/* Initialize a hashtable \
+bucket */
+.TE
+
+/* Global hashtable configuration (can be configured before inclusion) */
+.TS
+tab(;);
+lb l l
+.
+#define CHASH_INITIAL_SIZE;10;/* Initial size of a heap hashtable. Must be \
+positive */
+#define CHASH_LOAD_THRESHOLD;0.8;/* How much of a hashtable must be filled \
+before resizing? */
+#define CHASH_COUNTER_TYPE;int;/* Type of iterator counters */
+#define CHASH_RESIZE(size);((size) * 1.3);/* Calculates the next size of the \
+hashtable */
+.TE
+
+/* Hashtable operations */
+.br
+
+.BI "#define chash_init(" "hashtable" ", " "namespace" ");"
+.br
+.BI "#define chash_init_stack(" "hashtable" ", " "buffer" ", " "length" ", " \
+"namespace" ");"
+.br
+.BI "#define chash_assign(" "hashtable" ", " "key" ", " "value" ", " \
+"namespace" ");"
+.br
+.BI "#define chash_lookup(" "hashtable" ", " "key" ", " "storage" ", " \
+"namespace" ");"
+.br
+.BI "#define chash_lookup_bucket(" "hashtable" ", " "key" ", " "storage" ", " \
+"namespace" ");"
+.br
+.BI "#define chash_delete(" "hashtable" ", " "key" ", " "namespace" ");"
+.br
+.BI "#define chash_contains(" "hashtable" ", " "key" ", " "storage" ", " \
+"namespace" ");"
+.br
+.BI "#define chash_free(" "hashtable" ", " "namespace" ");"
+.br
+.BI "#define chash_iter(" "hashtable" ", " "index" ", " "_key" ", " "_value" \
+");"
+.br
+.BI "#define chash_is_full(" "hashtable" ", " "namespace" ");"
+
+.SH DESCRIPTION
+An ANSI C compliant hashtable implementation using macros. Allows for type
+safety, and tries to be as memory efficient as possible. The hashtable
+implementation allows for the hashtable to be used as a stack or heap hashtable
+which can allow for quick lookups of values without having to use the heap.
+
+This library is heavily documented, and information on each operation that is
+exposed to the programmer can be found in the table below.
+
+.TS
+tab(;);
+lb l
+_ _
+lb l
+.
+Manual;Description
+chash_init(cware);Initialize a hashtable on the heap
+chash_init_stack(cware);Initialize a hashtable on the stack
+chash_assign(cware);Assign a key to a value in a hashtable
+chash_lookup(cware);Find the value assigned to a key
+chash_lookup_bucket(cware);Lookup the bucket of a key
+chash_delete(cware);Remove a key and value from a hashtable
+chash_contains(cware);Check if the key exists in a hashtable
+chash_free(cware);Release the hashtable from memory
+chash_iter(cware);Iterate through a hashtable
+chash_is_full(cware);Detect if a hashtable is full
+.TE
+
+.SH CONFORMING TO
+This library conforms to C89.
+
+.SH SEE ALSO
+
+.BR cware (cware),
+.BR chash (cware)
+

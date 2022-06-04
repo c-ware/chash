@@ -1,0 +1,94 @@
+include(./chash.m4)
+
+CHASH_HEADER()
+
+.SH NAME
+chash_iter - iterate through a hashtable
+
+.SH SYNOPSIS
+CHASH_INCLUSIONS()
+
+.BI "#define chash_iter(" "hashtable" ", " "index" ", " "_key" ", " "_value" \
+");"
+.br
+.BI "#define chash_skip(" "hashtable" ", " "index" ");"
+
+.SH DESCRIPTION
+The
+.B chash_iter
+macro will iterate through all filled buckets in the hashtable, and unpack the
+key and value inside of each bucket filled bucket into the
+.I _key
+and
+.I _value
+variables.
+
+The
+.B chash_iter
+macro has no error conditions.
+
+CHASH_PARAMETER(`hashtable', `the hashtable to iterate through')
+CHASH_PARAMETER(`index', `the index in the hashtable')
+CHASH_PARAMETER(`_key', `the variable to write the key to')
+CHASH_PARAMETER(`_value', `the variable to write the value to')
+
+The
+.B chash_skip
+macro will skip over any indexes containing unfilled buckets. Intended to be
+used in the body of the for loop.
+
+This macro has no error conditions.
+
+CHASH_PARAMETER(`hashtable', `the hashtable to check the buckets of')
+CHASH_PARAMETER(`index', `the index in the hashtable')
+
+.SH EXAMPLES
+CHASH_EXAMPLE_COMMENT(`chash_iter')
+CHASH_INCLUSIONS()
+CHASH_EXAMPLE_INFO(1)
+
+int main(void) {
+.br
+    char *key = NULL;
+.br
+    int index = 0;
+.br
+    int value = 0;
+.br
+    struct StringHashtable *hashtable = chash_init(hashtable, STRING_TABLE);
+.br
+
+    /* Add some keys */
+.br
+    chash_assign(hashtable, "foo", 1);
+.br
+    chash_assign(hashtable, "bar", 2);
+.br
+    chash_assign(hashtable, "baz", 3);
+
+    /* Iterate through the hashtable */
+.br
+    chash_iter(hashtable, index, key, value) {
+.br
+        chash_skip(hashtable, index); /* Skip through unfilled buckets */
+.br
+
+        printf("%s: %i\\n", key, value);
+.br
+    }
+.br
+
+    /* Free the hashtable */
+.br
+    chash_free(hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+CHASH_SEE_ALSO()

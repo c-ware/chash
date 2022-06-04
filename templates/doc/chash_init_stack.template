@@ -1,0 +1,70 @@
+include(./chash.m4)
+
+CHASH_HEADER()
+
+.SH NAME
+chash_init_stack - initialise a new hashtable on the stack
+
+.SH SYNOPSIS
+CHASH_INCLUSIONS()
+
+.BI "#define chash_init_stack(" "hashtable" ", " "buffer" ", " "_length" ", " \
+"namespace" ");"
+
+.SH DESCRIPTION
+The
+.B chash_init_stack
+macro will initialise a new hashtable on the stack, and write it into the
+variable
+.IR hashtable .
+The hashtable produced by this macro does not have to be released from memory,
+as it is allocated on the stack.
+
+CHASH_ERROR_LIST_START()
+CHASH_ERROR_COND(`The buffer is NULL')
+CHASH_ERROR_COND(`The length is less than or equal to zero')
+CHASH_ERROR_LIST_END()
+
+
+CHASH_PARAMETER(`hashtable', `the variable to initialise the hashtable into')
+CHASH_PARAMETER(`buffer', `the stack array to use for the contents')
+CHASH_PARAMETER(`length', `the maximum length of the stack array')
+CHASH_PARAMETER(`namespace', `the namespace of the hashtable settings to use')
+
+.SH EXAMPLES
+CHASH_EXAMPLE_COMMENT(`chash_init_stack')
+CHASH_INCLUSIONS()
+CHASH_EXAMPLE_INFO(0)
+
+int main(void) {
+.br
+    struct StringBucket buckets[10] = {0};
+.br
+    struct StringHashtable hashtable = chash_init_stack(&hashtable,
+.br
+                                                        STRING_TABLE, buckets,
+.br
+                                                        10);
+.br
+
+    /* Perform operations on the hashtable */
+.br
+    chash_assign(&hashtable, "foo", 1);
+.br
+    chash_assign(&hashtable, "bar", 2);
+.br
+
+    /* Free the hashtable */
+.br
+    chash_free(&hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+CHASH_SEE_ALSO()

@@ -1,0 +1,91 @@
+include(./chash.m4)
+
+CHASH_HEADER()
+
+.SH NAME
+chash_lookup_bucket - retrieve the bucket a key is sotred in
+
+.SH SYNOPSIS
+CHASH_INCLUSIONS()
+
+.BI "#define chash_lookup(" "hashtable" ", " "_key" , "storage" ", " \
+"namespace" ");"
+
+.SH DESCRIPTION
+The
+.B chash_lookup_bucket
+macro will retrieve the bucket that a key is stored in inside of a hashtable,
+and write a pointer to the bucket into the variable
+.IR storage .
+If the key cannot be found in the hashtable, an error is raised. If you would
+like to simply detect if a key exists in a hashtable without raising an error
+if it is not, use
+.BR chash_contains (cware).
+
+CHASH_ERROR_LIST_START()
+CHASH_ERROR_COND(`The buffer is NULL')
+CHASH_ERROR_COND(`The key does not exist in the hashtable')
+CHASH_ERROR_LIST_END()
+
+
+CHASH_PARAMETER(`hashtable', `the hashtable to lookup in')
+CHASH_PARAMETER(`_key', `the key to lookup')
+CHASH_PARAMETER(`storage', `the location to write the bucket to')
+CHASH_PARAMETER(`namespace', `the namespace of the hashtable settings to use')
+
+.SH EXAMPLES
+CHASH_EXAMPLE_COMMENT(`chash_lookup_bucket')
+CHASH_INCLUSIONS()
+CHASH_EXAMPLE_INFO(1)
+
+int main(void) {
+.br
+    struct StringBucket *bucket = NULL;;
+.br
+    struct StringHashtable *hashtable = chash_init(hashtable, STRING_TABLE);
+.br
+
+    /* Add some keys */
+.br
+    chash_assign(hashtable, "foo", 1, STRING_TABLE);
+.br
+    chash_assign(hashtable, "bar", 2, STRING_TABLE);
+.br
+    chash_assign(hashtable, "baz", 3, STRING_TABLE);
+.br
+
+    /* Retrieve and display their keys and values */
+.br
+    bucket = chash_lookup_bucket(hashtable, "foo", bucket, STRING_TABLE);
+.br
+    printf("Key: %s\\n", bucket->key);
+.br
+    printf("Value: %s\\n", bucket->value);
+.br
+    bucket = chash_lookup_bucket(hashtable, "bar", bucket, STRING_TABLE);
+.br
+    printf("Key: %s\\n", bucket->key);
+.br
+    printf("Value: %s\\n", bucket->value);
+.br
+    bucket = chash_lookup_bucket(hashtable, "baz", bucket, STRING_TABLE);
+.br
+    printf("Key: %s\\n", bucket->key);
+.br
+    printf("Value: %s\\n", bucket->value);
+.br
+
+    /* Free the hashtable */
+.br
+    chash_free(hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+CHASH_SEE_ALSO()

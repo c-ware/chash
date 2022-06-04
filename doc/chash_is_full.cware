@@ -1,0 +1,152 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.TH "CHASH_IS_FULL" "cware" "March 8th, 2022" "" \
+    "C-Ware Manual"
+
+
+.SH NAME
+chash_is_full - determine if a hashtable is full
+
+.SH SYNOPSIS
+
+.B #include <stdio.h>
+.br
+.B #include <stdlib.h>
+.br
+.B #include <string.h>
+.br
+.B #include <cware/chash/chash.h>
+.br
+
+
+.BI "#define chash_is_full(" "hashtable" ", " "namespace" ");"
+
+.SH DESCRIPTION
+The
+.B chash_is_full
+macro will determine if a hashtable is full. This is useful when using a stack
+allocated hashtable, where you will most likely want to know if a hashtable is
+full or not before adding more elements, since stack hashtables do not
+dynamically resize themselves.
+
+This macro has no error conditions.
+
+.I hashtable
+will be the hashtable to check
+.br
+.I namespace
+will be the namespace of the hashtable settings to use
+.br
+
+.SH EXAMPLES
+
+/*
+.br
+ * This example showcases how to use the
+.B chash_is_full
+macro.
+.br
+*/
+
+
+.B #include <stdio.h>
+.br
+.B #include <stdlib.h>
+.br
+.B #include <string.h>
+.br
+.B #include <cware/chash/chash.h>
+.br
+
+
+.TS
+tab(;);
+l l
+.
+#define STRING_TABLE_HEAP;0
+#define STRING_TABLE_BUCKET;struct StringBucket
+#define STRING_TABLE_FREE_KEY(key);NULL
+#define STRING_TABLE_HASH(key, hash);chash_string_hash(key, hash)
+#define STRING_TABLE_FREE_VALUE(value);NULL
+#define STRING_TABLE_COMPARE(cmp_a, cmp_b);chash_string_compare(cmp_a, cmp_b)
+#define STRING_TABLE_INIT(bucket, _key, _value);\
+chash_default_init(bucket, _key, _value)
+.TE
+
+struct StringBucket {
+.br
+    char *key;
+.br
+    int value;
+.br
+    int state;
+.br
+};
+
+struct StringHashtable {
+.br
+    int length;
+.br
+    int capacity;
+.br
+    struct StringBucket *buckets;
+.br
+};
+
+
+int main(void) {
+.br
+    struct StringBucket buckets[3] = {0};
+.br
+    struct StringHashtable hashtable = chash_init_stack(&hashtable, buckets, 3,
+.br
+                                                        STRING_TABLE);
+.br
+
+    printf("Hashtable is full: %i\\n", chash_is_full(&hashtable, STRING_TABLE);
+.br
+    
+    /* Add some keys */
+.br
+    chash_assign(hashtable, "foo", 1);
+.br
+    chash_assign(hashtable, "bar", 2);
+.br
+    chash_assign(hashtable, "baz", 3);
+.br
+
+    printf("Hashtable is full: %i\\n", chash_is_full(&hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+
+.BR cware (cware),
+.BR chash (cware)
+

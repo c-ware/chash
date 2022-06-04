@@ -1,0 +1,199 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.TH "CHASH_CONTAINS" "cware" "March 8th, 2022" "" \
+    "C-Ware Manual"
+
+
+.SH NAME
+chash_contains - determine whether or not a key exists in a hashtable
+
+.SH SYNOPSIS
+
+.B #include <stdio.h>
+.br
+.B #include <stdlib.h>
+.br
+.B #include <string.h>
+.br
+.B #include <cware/chash/chash.h>
+.br
+
+
+.BI "#define chash_contains(" "hashtable" ", " "_key" " , " "storage" ", " \
+"namespace" ");"
+
+.SH DESCRIPTION
+The
+.B chash_contains
+will determine if a key exists inside of a hashtable, and write its status to
+the
+.I storage
+variable. This macro will not raise an error if it does not exist, and such is
+what should be used instead of
+.BI chash_lookup (cware)
+when you are unsure of the key's existence. If the key does exist in the
+hashtable, then
+.B 1
+will be written to
+.IR storage ,
+and if the key does not exist in the hashtable, then
+.B 0
+will be written to
+.IR storage .
+
+
+This macro will print an error message to the stderr, and exit the program when
+any of the following conditions are met:
+.RS
+
+
+.IP \[bu] 0.4i
+The buffer is NULL
+.br
+
+
+.RE
+
+
+
+.I hashtable
+will be the hashtable to search in
+.br
+.I _key
+will be the key to search for
+.br
+.I namespace
+will be the namespace of the hashtable settings to use
+.br
+
+.SH EXAMPLES
+
+/*
+.br
+ * This example showcases how to use the
+.B chash_contains
+macro.
+.br
+*/
+
+
+.B #include <stdio.h>
+.br
+.B #include <stdlib.h>
+.br
+.B #include <string.h>
+.br
+.B #include <cware/chash/chash.h>
+.br
+
+
+.TS
+tab(;);
+l l
+.
+#define STRING_TABLE_HEAP;1
+#define STRING_TABLE_BUCKET;struct StringBucket
+#define STRING_TABLE_FREE_KEY(key);NULL
+#define STRING_TABLE_HASH(key, hash);chash_string_hash(key, hash)
+#define STRING_TABLE_FREE_VALUE(value);NULL
+#define STRING_TABLE_COMPARE(cmp_a, cmp_b);chash_string_compare(cmp_a, cmp_b)
+#define STRING_TABLE_INIT(bucket, _key, _value);\
+chash_default_init(bucket, _key, _value)
+.TE
+
+struct StringBucket {
+.br
+    char *key;
+.br
+    int value;
+.br
+    int state;
+.br
+};
+
+struct StringHashtable {
+.br
+    int length;
+.br
+    int capacity;
+.br
+    struct StringBucket *buckets;
+.br
+};
+
+
+int main(void) {
+.br
+    int exists = -1;
+.br
+    struct StringHashtable *hashtable = chash_init(hashtable, STRING_TABLE);
+.br
+
+    /* Add some keys */
+.br
+    chash_assign(hashtable, "foo", 1, STRING_TABLE);
+.br
+    chash_assign(hashtable, "bar", 2, STRING_TABLE);
+.br
+    chash_assign(hashtable, "baz", 3, STRING_TABLE);
+.br
+
+    /* Display whether or not each key exists */
+.br
+    chash_contains(hashtable, "foo", exists, STRING_TABLE);
+.br
+    printf("'%s' exists in hashtable: %i\\n", "foo", exists);
+.br
+
+    chash_contains(hashtable, "bar", exists, STRING_TABLE);
+.br
+    printf("'%s' exists in hashtable: %i\\n", "bar", exists);
+.br
+
+    chash_contains(hashtable, "baz", exists, STRING_TABLE);
+.br
+    printf("'%s' exists in hashtable: %i\\n", "baz", exists);
+.br
+
+    chash_contains(hashtable, "tuna", exists, STRING_TABLE);
+.br
+    printf("'%s' exists in hashtable: %i\\n", "tuna", exists);
+.br
+
+    /* Free the hashtable */
+.br
+    chash_free(hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+
+.BR cware (cware),
+.BR chash (cware)
+

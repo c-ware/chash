@@ -1,0 +1,71 @@
+include(./chash.m4)
+
+CHASH_HEADER()
+
+.SH NAME
+chash_assign - assign a key value pair to a hashtable
+
+.SH SYNOPSIS
+CHASH_INCLUSIONS()
+
+.BI "#define chash_assign(" "hashtable" ", " "_key" ", " "_value" ", " \
+"namespace" ");"
+
+.SH DESCRIPTION
+The
+.B chash_assign
+macro will assign a key value pair to a hashtable based off the hash of
+.IR _key .
+If the hashtable is in heap mode, and the load factor of the hashtable has been
+computed to be above or equal to the load threshold, then the hashtable will be
+resized, copying all keys over to a new hashtable. If, however, in stack mode,
+then this macro will produce an error if the hashtable is full when trying to
+add a key. This macro will also overwrite the value of a key if the same key is
+provided, but a different value. The value before will be freed using the
+.I HASHTABLE_NAME_FREE_VALUE(value)
+macro.
+
+CHASH_ERROR_LIST_START()
+CHASH_ERROR_COND(`The buffer is NULL')
+CHASH_ERROR_COND(`The hashtable is full in stack mode')
+CHASH_ERROR_LIST_END()
+
+
+CHASH_PARAMETER(`hashtable', `the hashtable to assign the pair to')
+CHASH_PARAMETER(`_key', `the key to assign')
+CHASH_PARAMETER(`_value', `the value to assign the key to')
+CHASH_PARAMETER(`namespace', `the namespace of the hashtable settings to use')
+
+.SH EXAMPLES
+CHASH_EXAMPLE_COMMENT(`chash_assign')
+CHASH_INCLUSIONS()
+CHASH_EXAMPLE_INFO(1)
+
+int main(void) {
+.br
+    struct StringHashtable *hashtable = chash_init(hashtable, STRING_TABLE);
+.br
+
+    /* Add some keys */
+.br
+    chash_assign(hashtable, "foo", 1);
+.br
+    chash_assign(hashtable, "bar", 2);
+.br
+    chash_assign(hashtable, "baz", 3);
+.br
+
+    /* Free the hashtable */
+.br
+    chash_free(hashtable, STRING_TABLE);
+.br
+
+    return EXIT_SUCCESS;
+.br
+}
+
+.SH CONFORMING TO
+This macro conforms to C89.
+
+.SH SEE ALSO
+CHASH_SEE_ALSO()
