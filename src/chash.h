@@ -456,20 +456,14 @@ do {                                                                        \
 
 
 /* Iterator logic */
-#define chash_iter(hashtable, index, _key, _value)                           \
-	for((index) = 0, (_key) = (hashtable)->CHASH_BUCKETS_FIELD[index].       \
-                                                        CHASH_KEY_FIELD,     \
-       (_value) = (hashtable)->CHASH_BUCKETS_FIELD[index].CHASH_VALUE_FIELD; \
-       (index) < (hashtable)->CHASH_CAPACITY_FIELD;                          \
-       (index) = ((index) < (hashtable)->CHASH_CAPACITY_FIELD)               \
-                          ? ((index) + 1) : index,                           \
-       (_key) = (hashtable)->CHASH_BUCKETS_FIELD[index].CHASH_KEY_FIELD,     \
-       (_value) = (hashtable)->CHASH_BUCKETS_FIELD[index].CHASH_VALUE_FIELD, \
-       (index) = (hashtable)->CHASH_CAPACITY_FIELD)
+#define chash_iter(hashtable, i) \
+    for((i) = 0; (i) < (hashtable)->CHASH_CAPACITY_FIELD; (i)++)
 
-#define chash_skip(hashtable, index)                                        \
-    if((hashtable)->CHASH_BUCKETS_FIELD[index].                             \
-                                         CHASH_STATE_FIELD != CHASH_FILLED) \
-        continue;
+#define chash_get(hashtable, key, value, i)                                     \
+    if((hashtable)->CHASH_BUCKETS_FIELD[(i)].CHASH_STATE_FIELD != CHASH_FILLED) \
+        continue;                                                               \
+                                                                                \
+    (key) = (hashtable)->CHASH_BUCKETS_FIELD[(i)].CHASH_KEY_FIELD;              \
+    (value) = (hashtable)->CHASH_BUCKETS_FIELD[(i)].CHASH_VALUE_FIELD
 
 #endif

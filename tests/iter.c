@@ -13,8 +13,8 @@ int main(void) {
     chash_assign(hashtable, "tuna bar", 4, STRING_TABLE);
 
     /* Iterate through the hashtable */
-    chash_iter(hashtable, index, key, value) {
-        chash_skip(hashtable, index);
+    chash_iter(hashtable, index) {
+        chash_get(hashtable, key, value, index);
 
         /* Make sure the proper keys are retrieved */
         if(sequence == 0) {

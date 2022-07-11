@@ -8,20 +8,18 @@ chash_iter - iterate through a hashtable
 .SH SYNOPSIS
 CHASH_INCLUSIONS()
 
-.BI "#define chash_iter(" "hashtable" ", " "index" ", " "_key" ", " "_value" \
-");"
+.BI "#define chash_iter(" "hashtable" ", " "index" ");"
 .br
-.BI "#define chash_skip(" "hashtable" ", " "index" ");"
+.BI "#define chash_get(" "hashtable" ", " "index" ", " "_key" ", " "_value" \
+");"
 
 .SH DESCRIPTION
 The
 .B chash_iter
-macro will iterate through all filled buckets in the hashtable, and unpack the
-key and value inside of each bucket filled bucket into the
-.I _key
-and
-.I _value
-variables.
+macro will begin iteration through the hashtable. Extracting the current key
+and value, as well as skipping empty buckets, is done by calling the
+.BR chash_get (cware)
+macro.
 
 The
 .B chash_iter
@@ -29,18 +27,19 @@ macro has no error conditions.
 
 CHASH_PARAMETER(`hashtable', `the hashtable to iterate through')
 CHASH_PARAMETER(`index', `the index in the hashtable')
-CHASH_PARAMETER(`_key', `the variable to write the key to')
-CHASH_PARAMETER(`_value', `the variable to write the value to')
 
 The
-.B chash_skip
-macro will skip over any indexes containing unfilled buckets. Intended to be
+.B chash_get
+macro will skip over any indexes containing unfilled buckets, and extract
+the keys and values at the current location in the hashtable. Intended to be
 used in the body of the for loop.
 
 This macro has no error conditions.
 
 CHASH_PARAMETER(`hashtable', `the hashtable to check the buckets of')
 CHASH_PARAMETER(`index', `the index in the hashtable')
+CHASH_PARAMETER(`_key', `the variable to write the key to')
+CHASH_PARAMETER(`_value', `the variable to write the value to')
 
 .SH EXAMPLES
 CHASH_EXAMPLE_COMMENT(`chash_iter')
@@ -68,9 +67,11 @@ int main(void) {
 
     /* Iterate through the hashtable */
 .br
-    chash_iter(hashtable, index, key, value) {
+    chash_iter(hashtable, index) {
 .br
-        chash_skip(hashtable, index); /* Skip through unfilled buckets */
+        /* Skip through unfilled buckets, and extract the keys and values */
+.br
+        chash_skip(hashtable, key, value, index);
 .br
 
         printf("%s: %i\\n", key, value);
