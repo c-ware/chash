@@ -195,8 +195,8 @@ do {                                                                          \
     abort();                                                                  \
   }                                                                           \
                                                                               \
-  if((double) (hashtable)->CHASH_LENGTH_FIELD /                               \
-     (double) (hashtable)->CHASH_CAPACITY_FIELD  < CHASH_LOAD_THRESHOLD)      \
+  if((float) (hashtable)->CHASH_LENGTH_FIELD /                               \
+     (float) (hashtable)->CHASH_CAPACITY_FIELD  < CHASH_LOAD_THRESHOLD)      \
     break;                                                                    \
                                                                               \
   __CHASH_BUCKETS = malloc((size_t) (__CHASH_NEXT_SIZE                        \

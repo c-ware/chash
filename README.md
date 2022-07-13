@@ -30,3 +30,52 @@ constant name, then the property name. This allows any given operation to have
 access to important information about the internals of the hashtable at compile
 time, without the programmer having to have a bunch of annoying extra parameters
 to each macro operation.
+
+As an example of the above, let's say you had a hashtable which stored buckets
+that had a string as a key, and an integer as a value. Let's also say you
+wanted to initialize the hashtable, too.
+
+```c
+#define SITABLE_BUCKET  struct SIBucket
+
+struct SIBucket {
+    char *key;
+    int value;
+    int state;
+};
+
+struct SITable {
+    int length;
+    int capacity;
+    struct SIBucket *buckets;
+};
+
+int main(void) {
+    struct SITable *new_hashtable = chash_init(new_hashtable, SITABLE);
+
+    return 0;
+}
+```
+
+To initialize the hashtable, we give `chash_init` the namespace of this hashtable,
+which allows it to, among other things, lookup the type of the hashtable to know
+how many bytes it must allocate for the buckets field. For more of a practical
+example of how to use chash, as well as an example of all the properties that
+you must define for a hashtable to be used, see the `examples/` directory.
+
+## What Does This Support?
+You might recall me mentioning that this implementation is *highly portable.*
+When I say highly portable, I mean it supports all of these operating systems.
+
+#### Linux
+- Arch Linux
+- Debian
+- Linux Mint
+
+#### BSDs
+- NetBSD
+- FreeBSD
+- OpenBSD
+- DragonflyBSD
+
+#### Random UNIXes I have for some reason
